@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{view.login.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="fragments/layout :: header"></div>
+<form action="#" method="post" th:action="@{/authenticate}">
+    <div class="container" style="margin-top: 20px">
+
+        <th:block th:if="${param.error != null}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="#{view.login.error}"></span>
+                <span></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </th:block>
+
+
+        <div class="card">
+            <div class="card-header"><span th:text="#{view.login.title}"></span></div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="inputUsername" class="col-md-4 col-form-label text-md-right"><span
+                            th:text="#{view.login.username}"></span></label>
+                    <div class="col-md-6">
+                        <input type="text" id="inputUsername" class="form-control" name="username"
+                               required autofocus>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword" class="col-md-4 col-form-label text-md-right"><span
+                            th:text="#{view.login.password}"></span></label>
+                    <div class="col-md-6">
+                        <input type="password" id="inputPassword" class="form-control" name="password"
+                               required>
+                    </div>
+                </div>
+                <div class="col-md-6 offset-md-4">
+                    <button type="submit" class="btn btn-success" style="margin-left: -5px">
+                       <span
+                               th:text="#{view.login.submit}"></span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</form>
+</body>
+</html>

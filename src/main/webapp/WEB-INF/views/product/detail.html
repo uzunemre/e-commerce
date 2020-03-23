@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{view.product.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" media="screen" th:href="@{/resources/css/core.css}"/>
+    <link rel="stylesheet" media="screen" th:href="@{/resources/css/product.css}"/>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="fragments/layout :: header"></div>
+
+<div class="container" style="margin-top: 20px">
+
+
+    <div id="result"></div>
+
+    <div class="product">
+        <div class="img-container">
+            <img th:src="${product.image}">
+        </div>
+        <div class="product-info">
+            <div class="product-content">
+                <h1 th:text="${product.name}"></h1>
+                <span th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 2, 'COMMA') + ' TL'}"></span>
+                <div class="form-group" style="margin-top: 20px">
+                    <label>Quantity:</label>
+                    <input id="quantity" type="number" value="1" min="1">
+                    <button id="addBasketBtn" style="margin-left: 10px;" type="submit" class="btn btn-primary">Add to
+                        Basket
+                    </button>
+                </div>
+                <div class="card" style="width: 500px">
+                    <div class="card-body">
+                        <h5 class="card-title">Product Details</h5>
+                        <div class="card-text" th:if="${product.sizeEnum == null}">
+                            <label>Size:</label>
+                            <span>No data available</span>
+                        </div>
+                        <div class="card-text" th:if="${product.sizeEnum != null}">
+                            <label>Size:</label>
+                            <span th:text="${product.sizeEnum.message}"></span>
+                        </div>
+                        <div class="card-text" th:if="${product.colorEnum == null}">
+                            <label>Colour:</label>
+                            <span>No data available</span>
+                        </div>
+                        <div class="card-text" th:if="${product.colorEnum != null}">
+                            <label>Colour:</label>
+                            <span th:text="${product.colorEnum.message}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript" type="text/javascript">
+    /* Fill in modal with content loaded with Ajax */
+    $(document).ready(function () {
+        $('#addBasketBtn').on('click', function () {
+
+            var quantity = $('#quantity').val();
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var data = {};
+            data["quantity"] = quantity;
+            data["subProductId"] = [[${product.id}]];
+
+            $.ajax({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                type: "POST",
+                contentType: "application/json",
+                url: '/basket/add',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function (data) {
+                    $("#result").html('<div class="alert alert-success alert-dismissible fade show" role="alert">\n' +
+                        '                <span>Added To Basket</span>\n' +
+                        '                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                        '                    <span aria-hidden="true">&times;</span>\n' +
+                        '                </button>\n' +
+                        '            </div>');
+                },
+                error: function (e) {
+                    $("#result").html('<div class="alert alert-danger alert-dismissible fade show" role="alert">\n' +
+                        '                <span>Error occurred</span>\n' +
+                        '                <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                        '                    <span aria-hidden="true">&times;</span>\n' +
+                        '                </button>\n' +
+                        '            </div>');
+                }
+            });
+
+
+        })
+    });
+
+
+</script>
+
+</body>
+</html>
